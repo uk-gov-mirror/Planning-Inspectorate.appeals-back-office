@@ -252,6 +252,88 @@ const appealsApiRequests = {
 			appellantProcedurePreference: "inquiry",
 		}
 	},
+	hasExpeditedSubmission: {
+		casedata: {
+			...baseSubmission.casedata,
+			caseType: 'D',
+			applicationDate: '2026-04-01T00:00:00.000Z',
+			applicationDecision: 'refused',
+			reasonForAppealAppellant: 'My reason for Householder appeal',
+			significantChangesAffectingApplicationAppellant: [
+				{ value: 'adopted-a-new-local-plan', comment: 'Local plan changes' },
+				{ value: 'national-policy-change', comment: 'National policy changes' },
+				{ value: 'court-judgement', comment: 'Court judgment changes' },
+				{ value: 'other', comment: 'Other changes' }
+			]
+		}
+	},
+	casPlanningExpeditedSubmission: {
+		casedata: {
+			...baseSubmission.casedata,
+			caseType: 'ZP',
+			applicationDate: '2026-04-01T00:00:00.000Z',
+			applicationDecision: 'refused',
+			typeOfPlanningApplication: 'minor-commercial-development',
+			reasonForAppealAppellant: 'My reason for CAS planning appeal',
+			significantChangesAffectingApplicationAppellant: [
+				{ value: 'adopted-a-new-local-plan', comment: 'Local plan changes' },
+				{ value: 'national-policy-change', comment: 'National policy changes' },
+				{ value: 'court-judgement', comment: 'Court judgment changes' },
+				{ value: 'other', comment: 'Other changes' }
+			]
+		}
+	},
+	casAdvertsExpeditedSubmission: {
+		casedata: {
+			...baseSubmission.casedata,
+			submissionId: '14960baa-3d0f-4db9-9e84-0c75be891560',
+			caseType: 'ZA',
+			applicationDate: '2026-04-01T00:00:00.000Z',
+			applicationDecision: 'refused',
+			typeOfPlanningApplication: 'advertisement',
+			reasonForAppealAppellant: 'My reason for CAS advert appeal',
+			significantChangesAffectingApplicationAppellant: [
+				{ value: 'adopted-a-new-local-plan', comment: 'Local plan changes' },
+				{ value: 'national-policy-change', comment: 'National policy changes' },
+				{ value: 'court-judgement', comment: 'Court judgment changes' },
+				{ value: 'other', comment: 'Other changes' }
+			],
+			advertDetails: [
+				{
+					advertType: null,
+					isAdvertInPosition: true,
+					isSiteOnHighwayLand: true
+				}
+			],
+			hasLandownersPermission: true,
+			siteGridReferenceEasting: '012345',
+			siteGridReferenceNorthing: '678910'
+		},
+		documents: [
+			{
+				dateCreated: '2024-03-01T13:48:35.847Z',
+				documentId: '001',
+				documentType: 'appellantCostsApplication',
+				documentURI:
+					'https://pinsstdocsdevukw001.blob.core.windows.net/uploads/055c2c5a-a540-4cd6-a51a-5cfd2ddc16bf/788b8a15-d392-4986-ac23-57be2f824f9c/--12345678---chrishprofilepic.jpeg',
+				filename: 'img1.jpg',
+				mime: 'image/jpeg',
+				originalFilename: 'oimg.jpg',
+				size: 10293
+			}
+		],
+		users: [
+			{
+				emailAddress: 'test@test.com',
+				firstName: 'Testy',
+				lastName: 'McTest',
+				salutation: 'Mr',
+				serviceUserType: 'Appellant',
+				organisation: 'A company',
+				telephoneNumber: '0123456789'
+			}
+		]
+	},
 	casAdvertsSubmission: {
 		casedata: {
 			submissionId: '14960baa-3d0f-4db9-9e84-0c75be891560',
