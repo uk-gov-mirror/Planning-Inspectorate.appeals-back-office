@@ -6,7 +6,11 @@ import { appealProcedureNameToLabelText } from '#lib/procedure-type-display-name
 import { APPEAL_TYPE, PROCEDURE_TYPE_NAME } from '@pins/appeals/constants/common.js';
 import { utcToZonedTime } from 'date-fns-tz';
 import * as interestedPartyCommentsService from '../representations/interested-party-comments/interested-party-comments.service.js';
-import { mapMessageContent, tryMapUsers } from './audit.mapper.js';
+import {
+	mapMessageContent,
+	renderRejectedIpCommentComponent,
+	tryMapUsers
+} from './audit.mapper.js';
 import { getAppealAudit, getAppealAuditNotifications } from './audit.service.js';
 /**
  * @typedef {import('@pins/appeals.api/src/server/openapi-types.js').AuditNotifications} AuditNotifications
@@ -34,11 +38,17 @@ export const renderAudit = async (request, response) => {
 	const auditInfoRequest = getAppealAudit(request.apiClient, appealId);
 	const auditNotifications = getAppealAuditNotifications(request.apiClient, appealId);
 	const caseNotesRequest = getAppealCaseNotes(request.apiClient, appealId);
+	const invalidIpCommentsRequest = interestedPartyCommentsService.getInterestedPartyComments(
+		request.apiClient,
+		appeal.appealId,
+		'invalid'
+	);
 
-	const [auditInfo, caseNotes, notifications] = await Promise.all([
+	const [auditInfo, caseNotes, notifications, invalidIpComments] = await Promise.all([
 		auditInfoRequest,
 		caseNotesRequest,
-		auditNotifications
+		auditNotifications,
+		invalidIpCommentsRequest
 	]);
 
 	if (!auditInfo && !caseNotes) {
@@ -166,10 +176,26 @@ export const renderAudit = async (request, response) => {
 			};
 		})
 	);
+	const rejectedCommentsArray = await Promise.all(
+		(invalidIpComments?.items || []).map(async (comment) => {
+			const date = comment.lastUpdated || comment.created;
+			const dateObj = date ? utcToZonedTime(date, 'Europe/London') : new Date();
+			const detailsHtml = await renderRejectedIpCommentComponent(comment, nunjucksEnvironments);
+			return {
+				dateTime: dateObj.getTime(),
+				date: date ? dateISOStringToDisplayDate(date) : '',
+				time: date ? dateISOStringToDisplayTime12hr(date) : '',
+				details: detailsHtml,
+				user: await tryMapUsers(comment.reviewer || '', request.session, request.apiClient)
+			};
+		})
+	);
+
 	const sortedCaseNotesAndAuditEntries = [
 		...auditTrails,
 		...caseNotesArray,
-		...notificationsArray
+		...notificationsArray,
+		...rejectedCommentsArray
 	].sort((a, b) => b.dateTime - a.dateTime);
 
 	const shortAppealReference = appealShortReference(appeal.appealReference);

@@ -28,6 +28,8 @@ export const formatRepresentation = (rep) => {
 		originalRepresentation: rep.originalRepresentation || '',
 		redactedRepresentation: rep.redactedRepresentation || '',
 		created: rep.dateCreated.toISOString(),
+		lastUpdated: rep.dateLastUpdated?.toISOString(),
+		reviewer: rep.reviewer ?? undefined,
 		notes: rep.notes || '',
 		attachments: (() => {
 			if (!repHasAttachments(rep)) {
